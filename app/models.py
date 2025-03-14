@@ -16,7 +16,7 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(
         String(255), unique=True, nullable=False, index=True
     )
-    password: Mapped[str] = mapped_column(String(255), nullable=False)
+    _password: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(UTC), nullable=False
     )
@@ -25,13 +25,29 @@ class User(db.Model):
         """Return string representation of the user."""
         return f"<User {self.name}, email: {self.email}>"
 
-    def set_password(self, password: str) -> None:
+    @property
+    def password(self) -> None:
+        """Password getter. Protect from reading the password."""
+        raise AttributeError("Password is write-only.")
+
+    @password.setter
+    def password(self, password: str) -> None:
         """Hash and set the user password."""
-        self.password = bcrypt.generate_password_hash(password).decode("utf-8")
+        self._password = bcrypt.generate_password_hash(password).decode("utf-8")
 
     def check_password(self, password: str) -> bool:
         """Check if the provided password matches the stored hash."""
-        return bcrypt.check_password_hash(self.password, password)
+        return bcrypt.check_password_hash(self._password, password)
+
+    @classmethod
+    def create(cls, name: str, email: str, password: str) -> "User":
+        """
+        Create a new user with the given attributes.
+        This factory method ensures the password is properly hashed.
+        """
+        new_user = cls(name=name, email=email)
+        new_user.password = password
+        return new_user
 
     @classmethod
     def get_all(cls) -> list["User"]:
