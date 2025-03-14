@@ -1,9 +1,13 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
+from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 migrate = Migrate()
+marshmallow = Marshmallow()
+bcrypt = Bcrypt()
 
 
 def create_app() -> Flask:
@@ -19,5 +23,7 @@ def create_app() -> Flask:
 
     db.init_app(app)
     migrate.init_app(app, db)
+    marshmallow.init_app(app)
+    bcrypt.init_app(app)
 
     return app
