@@ -93,7 +93,7 @@ def test_create_user_with_duplicate_email(
 
     data = json.loads(response.data)
     assert "message" in data
-    assert "error" in data
+    assert "errors" in data
     assert "email already exists" in str(data).lower()
 
 

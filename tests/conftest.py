@@ -13,20 +13,16 @@ from app.models import User
 @pytest.fixture(scope="session")
 def app() -> Generator[Flask, None, None]:
     """Create a Flask app for testing."""
-    os.environ["POSTGRES_USER"] = "postgres"
-    os.environ["POSTGRES_PASSWORD"] = "postgres"
-    os.environ["POSTGRES_HOST"] = "localhost"
-    os.environ["POSTGRES_PORT"] = "5432"
-    os.environ["POSTGRES_DB"] = "users_test"
-
     app = create_app()
     app.config["TESTING"] = True
-    app.config["SERVER_NAME"] = "localhost"
 
     with app.app_context():
         db.create_all()
         yield app
         db.session.remove()
+
+    if "TESTING" in os.environ:
+        del os.environ["TESTING"]
 
 
 @pytest.fixture(scope="function")

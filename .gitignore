@@ -2,4 +2,5 @@
 *.db
 .idea
 .env
+.coverage
 __pycache__
