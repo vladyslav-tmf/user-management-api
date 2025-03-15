@@ -1,8 +1,14 @@
+from pathlib import Path
+
+from dotenv import load_dotenv
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+
+env_path = Path(".") / ".env"
+load_dotenv(dotenv_path=env_path)
 
 db = SQLAlchemy()
 migrate = Migrate()
