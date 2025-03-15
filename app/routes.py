@@ -5,13 +5,13 @@ from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from app.app import db
 from app.models import User
 from app.schemas import (
+    UserUpdateSchema,
     user_create_schema,
     user_schema,
-    user_update_schema,
     users_schema,
 )
 
-users_bp = Blueprint("users", __name__, url_prefix="/users")
+users_bp = Blueprint("users", __name__)
 
 
 @users_bp.route("/", methods=["GET"])
@@ -41,7 +41,7 @@ def create_user():
         if not json_data:
             return jsonify({"message": "No input data provided"}), 400
 
-        user = user_create_schema.load(json_data)
+        user = user_create_schema.load(json_data, session=db.session)
         new_user = User.create(
             name=user.name, email=user.email, password=json_data.get("password")
         )
@@ -88,8 +88,8 @@ def update_user(user_id: int):
                 400,
             )
 
-        context = {"user": user}
-        updated_data = user_update_schema.load(json_data, context=context)
+        schema = UserUpdateSchema(context={"user": user})
+        updated_data = schema.load(json_data, session=db.session)
 
         user.name = updated_data.name
         user.email = updated_data.email

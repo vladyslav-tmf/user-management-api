@@ -100,4 +100,3 @@ class UserCreateSchema(UserSchema, PasswordValidationMixin):
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
 user_create_schema = UserCreateSchema()
-user_update_schema = UserUpdateSchema()

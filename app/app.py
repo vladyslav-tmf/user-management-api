@@ -34,6 +34,6 @@ def create_app() -> Flask:
 
     from app.routes import users_bp
 
-    app.register_blueprint(users_bp, url_prefix="/api/v1")
+    app.register_blueprint(users_bp, url_prefix="/api/v1/users")
 
     return app
