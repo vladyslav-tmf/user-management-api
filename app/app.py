@@ -32,8 +32,10 @@ def create_app() -> Flask:
     marshmallow.init_app(app)
     bcrypt.init_app(app)
 
+    from app.api import docs_bp
     from app.routes import users_bp
 
     app.register_blueprint(users_bp, url_prefix="/api/v1/users")
+    app.register_blueprint(docs_bp, url_prefix="/api/docs")
 
     return app
